@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Celebration</title>
+<style>
+  body {
+    margin:0; padding:0;
+    font-family:'Poppins',sans-serif;
+    background:radial-gradient(circle at top,#ff9a9e,#fad0c4);
+    text-align:center; color:#fff;
+    overflow:auto; /* allow scrolling */
+  }
+  .screen { display:none; animation:fadeIn 1s ease-in-out; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(50px);} to{opacity:1;transform:translateY(0);} }
+  h1 { font-size:2.5em; text-shadow:0 0 20px #ffeb3b,0 0 40px #ff4081; animation:glow 2s infinite alternate; }
+  @keyframes glow { from{text-shadow:0 0 20px #ffeb3b;} to{text-shadow:0 0 40px #ff4081;} }
+  input { padding:10px; margin:10px; border-radius:10px; border:none; width:80%; max-width:400px; }
+  button { padding:12px 25px; border:none; border-radius:10px; background:#ffeb3b; cursor:pointer; }
+  button:hover { background:#ffc107; transform:scale(1.1); }
+  /* balloons only hide overflow during transition */
+  #transition {
+    position:relative;
+    overflow:hidden;
+    height:100vh;
+  }
+  .balloon {
+    position:absolute;
+    bottom:-150px;
+    width:60px; height:80px;
+    border-radius:50%;
+    animation:float 8s linear forwards;
+  }
+  @keyframes float { to { transform:translateY(-120vh) rotate(360deg); opacity:0; } }
+  .dashboard img {
+    max-width:90%; height:auto;
+    border-radius:20px; box-shadow:0 0 20px #000;
+    margin-top:20px;
+  }
+  .slideshow {
+    margin:20px auto;
+    width:90%; max-width:600px;
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+  }
+  .slideshow img {
+    width:100%; height:auto;
+    opacity:0;
+    transform:scale(1.2) rotate(10deg);
+    transition:opacity 1.5s, transform 1.5s;
+    position:absolute; top:0; left:0;
+  }
+  .slideshow img.active {
+    opacity:1;
+    transform:scale(1) rotate(0deg);
+    position:relative;
+  }
+  .animated-text {
+    font-size:2em;
+    opacity:0;
+    animation:fadeInText 3s forwards;
+  }
+  @keyframes fadeInText { to { opacity:1; } }
+  .description {
+    margin:20px auto;
+    max-width:600px;
+    font-size:1.2em;
+    background:rgba(0,0,0,0.4);
+    padding:15px;
+    border-radius:15px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Questions -->
+<div class="screen" id="questions" style="display:block;">
+  <h2>🎉 Answer a Few Fun Questions 🎂</h2>
+  <p>Your Name:</p><input id="friendName">
+  <p>your Favorite Color:</p><input id="favColor">
+  <p>Tell about you in  one word:</p><input id="word">
+  <button onclick="startTransition()">Submit</button>
+</div>
+
+<!-- Transition with Balloons and Wishes -->
+<div class="screen" id="transition">
+  <h2 class="animated-text">🎈 Balloons are flying... 🎈</h2>
+  <h2 class="animated-text">✨ Happy Birthday! ✨</h2>
+</div>
+
+<!-- Birthday Dashboard -->
+<div class="screen" id="dashboard">
+  <h1 id="wishTitle"></h1>
+  <p id="wishMessage"></p>
+  <img src="birthday_photo.jpg" alt="Birthday Pic">
+  <p class="description">💖 A best friend is someone who makes every moment brighter. May your day be filled with laughter, love, and unforgettable memories.</p>
+  <br><button onclick="showSurprise()">Click for Surprise ✨</button>
+</div>
+
+<!-- Surprise Slideshow -->
+<div class="screen" id="surprise">
+  <h2>🎊 Special Memories 🎊</h2>
+  <div class="slideshow" id="slideshow">
+    <img src="pic1.jpg" class="active">
+    <img src="pic2.jpg">
+    <img src="pic3.jpg">
+    <img src="pic4.jpg">
+  </div>
+  <p id="creativeWish"></p>
+  <p class="description">🌟 Best friends are treasures of the heart. These memories remind that the joy you share and the bond that grows stronger every year.</p>
+</div>
+
+<script>
+const birthdayDate="20 March 2026"; // fixed by developer
+
+function startTransition(){
+  document.getElementById("questions").style.display="none";
+  const trans=document.getElementById("transition");
+  trans.style.display="block";
+  // create balloons
+  for(let i=0;i<20;i++){
+    const balloon=document.createElement("div");
+    balloon.className="balloon";
+    balloon.style.left=Math.random()*window.innerWidth+"px";
+    balloon.style.background=`hsl(${Math.random()*360},70%,60%)`;
+    balloon.style.animationDuration=(5+Math.random()*5)+"s";
+    trans.appendChild(balloon);
+    setTimeout(()=>balloon.remove(),10000);
+  }
+  setTimeout(showDashboard,4000);
+}
+
+function showDashboard(){
+  document.getElementById("transition").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  const name=document.getElementById("friendName").value;
+  const color=document.getElementById("favColor").value;
+  const word=document.getElementById("word").value;
+  document.body.style.background=`linear-gradient(135deg, ${color}, #000)`;
+  document.getElementById("wishTitle").innerHTML=`🎉 Happy Birthday ${name}! 🎂`;
+  document.getElementById("wishMessage").innerHTML=` ${birthdayDate}, today we celebrate YOU!<br>You are: ${word}`;
+}
+
+function showSurprise(){
+  document.getElementById("dashboard").style.display="none";
+  document.getElementById("surprise").style.display="block";
+  let slides=document.querySelectorAll("#slideshow img"); let current=0;
+  setInterval(()=>{
+    slides[current].classList.remove("active");
+    current=(current+1)%slides.length;
+    slides[current].classList.add("active");
+  },3000);
+  document.getElementById("creativeWish").innerHTML="✨ May your life sparkle like fireworks, float like balloons, and be as sweet as cake. Happy Birthday! ✨";
+}
+</script>
+</body>
+</html>
